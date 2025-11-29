@@ -4,17 +4,15 @@
 // Watch category
 $category = "Luxury";
 
-// Watches in cart
+// Watches in cart with images
 $cart_items = [
-    'Seiko SARB' => ['price' => 15000, 'qty' => 3],
-    'Rolex Starbucks' => ['price' => 120000, 'qty' => 1],
-    'Casio G-Shock' => ['price' => 5000, 'qty' => 2]
+    'Seiko SARB' => ['price' => 15000, 'qty' => 3, 'img' => 'https://www.abtsaat.com/ProductImages/98497/big/sarb033.jpg'],
+    'Rolex Starbucks' => ['price' => 120000, 'qty' => 1, 'img' => 'https://zeitwatches.com/cdn/shop/files/CopyofZeitstockcopy.png?v=1726752983&width=2048'],
+    'Casio G-Shock' => ['price' => 5000, 'qty' => 2, 'img' => 'https://www.casio.com/content/dam/casio/product-info/locales/ph/en/timepiece/product/watch/G/GM/gmb/gm-b2100gd-9a/assets/GM-B2100GD-9A.png.transform/main-visual-sp/image.png']
 ];
 
 // Tax rate
 $tax_rate = 12;
-
-// Initialize subtotal
 $subtotal = 0;
 
 // Switch based on category
@@ -32,23 +30,35 @@ switch($category){
         echo "<p>Check out our other watch collections!</p>";
 }
 
-// Display shopping cart
+// Display shopping cart heading
 echo "<h2>Shopping Cart</h2>";
+
+// Start cart grid
+echo '<section class="watch-grid">';
 foreach($cart_items as $name => $info){
     $price = $info['price'];
     $qty = $info['qty'];
+    $img = $info['img'];
     $line_total = $price * $qty;
     $subtotal += $line_total;
 
-    echo "<p>$name - Qty: $qty, Price: P" . number_format($price) . "</p>";
-    echo "<p>Line Total: P" . number_format($line_total) . "</p>";
+    echo '
+    <div class="watch-card">
+        <img src="' . $img . '" alt="' . $name . '">
+        <div class="watch-name">' . $name . '</div>
+        <div class="watch-price">₱' . number_format($price) . '</div>
+        <div class="watch-qty">Qty: ' . $qty . '</div>
+        <div class="watch-line-total">Line Total: ₱' . number_format($line_total) . '</div>
+    </div>';
 }
+echo '</section>';
 
 // Apply discount if subtotal > 15000
 $discount = 0;
+$special_notes = [];
 if($subtotal > 15000){
     $discount = ($subtotal * 10) / 100; // 10% discount
-    echo "<p>Discount Applied: P" . number_format($discount) . "</p>";
+    $special_notes[] = "10% discount applied for orders above ₱15,000!";
 }
 
 $subtotal_after_discount = $subtotal - $discount;
@@ -57,18 +67,40 @@ $subtotal_after_discount = $subtotal - $discount;
 $tax = ($subtotal_after_discount * $tax_rate) / 100;
 $total = $subtotal_after_discount + $tax;
 
+// Display totals
+echo "<div class='total-box'>";
 echo "<p>Subtotal: P" . number_format($subtotal_after_discount) . "</p>";
 echo "<p>Tax ($tax_rate%): P" . number_format($tax) . "</p>";
 echo "<p>Total: P" . number_format($total) . "</p>";
+echo "</div>";
 
-// Best sellers
-$best_sellers = ['Rolex Starbucks', 'Patek Philippe Nautilus', 'Seiko SARB'];
-
-echo "<h2>Best Sellers</h2><ul>";
-foreach($best_sellers as $watch){
-    echo "<li>$watch</li>";
+// Special notes
+if(!empty($special_notes)){
+    echo "<div class='notes-box'><h3>Special Notes</h3><ul>";
+    foreach($special_notes as $note){
+        echo "<li>$note</li>";
+    }
+    echo "</ul></div>";
 }
-echo "</ul>";
+
+// Best sellers grid
+$best_sellers = [
+    'Rolex Starbucks' => ['price' => 120000, 'img' => 'https://zeitwatches.com/cdn/shop/files/CopyofZeitstockcopy.png?v=1726752983&width=2048'],
+    'Patek Philippe Nautilus' => ['price' => 2500000, 'img' => 'https://wristaficionado.com/cdn/shop/collections/Patek_Philippe_Nautilus_c4fc6edf-2781-47c2-961b-7ad8d991cd1f_800x800@2x.png?v=1747155843'],
+    'Seiko SARB' => ['price' => 15000, 'img' => 'https://www.abtsaat.com/ProductImages/98497/big/sarb033.jpg']
+];
+
+echo "<h2>Best Sellers</h2>";
+echo '<section class="watch-grid">';
+foreach($best_sellers as $name => $info){
+    echo '
+    <div class="watch-card">
+        <img src="' . $info['img'] . '" alt="' . $name . '">
+        <div class="watch-name">' . $name . '</div>
+        <div class="watch-price">₱' . number_format($info['price']) . '</div>
+    </div>';
+}
+echo '</section>';
 ?>
 
 <?php include 'footer.php'; ?>
