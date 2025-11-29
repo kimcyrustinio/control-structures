@@ -3,35 +3,47 @@
 <?php
 // Our watch cart
 $watches = [
-    'Seiko Sarb' => [15000, 3],
-    'Rolex Starbucks' => [250000, 1],
-    'Casio G-Shock' => [5000, 2]
+    'Seiko SARB' => ['price' => 15000, 'qty' => 3, 'img' => 'https://www.abtsaat.com/ProductImages/98497/big/sarb033.jpg'],
+    'Rolex Starbucks' => ['price' => 250000, 'qty' => 1, 'img' => 'https://zeitwatches.com/cdn/shop/files/CopyofZeitstockcopy.png?v=1726752983&width=2048'],
+    'Casio G-Shock' => ['price' => 5000, 'qty' => 2, 'img' => 'https://www.casio.com/content/dam/casio/product-info/locales/ph/en/timepiece/product/watch/G/GM/gmb/gm-b2100gd-9a/assets/GM-B2100GD-9A.png.transform/main-visual-sp/image.png']
 ];
 
 $taxPercent = 12;
 $subtotal = 0;
 
-// Show cart items
+// Display cart heading
 echo "<h2>Shopping Cart</h2>";
-foreach ($watches as $watch => $info) {
-    $price = $info[0];
-    $qty = $info[1];
+
+// Start the cart grid
+echo '<section class="watch-grid">';
+foreach ($watches as $name => $info) {
+    $price = $info['price'];
+    $qty = $info['qty'];
+    $img = $info['img'];
     $lineTotal = $price * $qty;
     $subtotal += $lineTotal;
 
-    echo "<p>$watch - Qty: $qty, Price: P" . number_format($price) . ", Line Total: P" . number_format($lineTotal) . "</p>";
+    echo '
+    <div class="watch-card">
+        <img src="' . $img . '" alt="' . $name . '">
+        <div class="watch-name">' . $name . '</div>
+        <div class="watch-price">₱' . number_format($price) . '</div>
+        <div class="watch-qty">Qty: ' . $qty . '</div>
+        <div class="watch-line-total">Line Total: ₱' . number_format($lineTotal) . '</div>
+    </div>';
 }
+echo '</section>';
 
 // Special notes & discounts
 $notes = [];
 $discount = 0;
 
-// Give free cleaning kit if buying 3 or more Seiko Sarb
-if (isset($watches['Seiko Sarb']) && $watches['Seiko Sarb'][1] >= 3) {
-    $notes[] = "Free watch cleaning kit for buying {$watches['Seiko Sarb'][1]} x Seiko Sarb!";
+// Free cleaning kit for Seiko SARB
+if (isset($watches['Seiko SARB']) && $watches['Seiko SARB']['qty'] >= 3) {
+    $notes[] = "Free watch cleaning kit for buying {$watches['Seiko SARB']['qty']} x Seiko SARB!";
 }
 
-// Apply order-level discounts
+// Order-level discounts
 if ($subtotal > 200000) {
     $notes[] = "Big order discount! 5% off your total.";
     $discount = $subtotal * 0.05;
@@ -44,26 +56,39 @@ $tax = $totalAfterDiscount * ($taxPercent / 100);
 $total = $totalAfterDiscount + $tax;
 
 // Display totals
-echo "<p>Subtotal: P" . number_format($totalAfterDiscount) . "</p>";
-echo "<p>Tax ($taxPercent%): P" . number_format($tax) . "</p>";
-echo "<p>Total: P" . number_format($total) . "</p>";
+echo "<div class='total-box'>";
+echo "<p>Subtotal: ₱" . number_format($totalAfterDiscount) . "</p>";
+echo "<p>Tax ($taxPercent%): ₱" . number_format($tax) . "</p>";
+echo "<p>Total: ₱" . number_format($total) . "</p>";
+echo "</div>";
 
-// Show special notes if any
+// Display special notes
 if (!empty($notes)) {
-    echo "<h3>Notes</h3><ul>";
+    echo "<div class='notes-box'><h3>Notes</h3><ul>";
     foreach ($notes as $note) {
         echo "<li>$note</li>";
     }
-    echo "</ul>";
+    echo "</ul></div>";
 }
 
-// Some popular watches
-$topWatches = ['Rolex Starbucks', 'Patek Philippe Nautilus', 'Seiko Sarb'];
-echo "<h2>Best Sellers</h2><ul>";
-foreach ($topWatches as $w) {
-    echo "<li>$w</li>";
+// Best Sellers with grid
+$best_sellers = [
+    'Rolex Starbucks' => ['price' => 250000, 'img' => 'https://zeitwatches.com/cdn/shop/files/CopyofZeitstockcopy.png?v=1726752983&width=2048'],
+    'Patek Philippe Nautilus' => ['price' => 2500000, 'img' => 'https://wristaficionado.com/cdn/shop/collections/Patek_Philippe_Nautilus_c4fc6edf-2781-47c2-961b-7ad8d991cd1f_800x800@2x.png?v=1747155843'],
+    'Seiko SARB' => ['price' => 15000, 'img' => 'https://www.abtsaat.com/ProductImages/98497/big/sarb033.jpg']
+];
+
+echo "<h2>Best Sellers</h2>";
+echo '<section class="watch-grid">';
+foreach ($best_sellers as $name => $info) {
+    echo '
+    <div class="watch-card">
+        <img src="' . $info['img'] . '" alt="' . $name . '">
+        <div class="watch-name">' . $name . '</div>
+        <div class="watch-price">₱' . number_format($info['price']) . '</div>
+    </div>';
 }
-echo "</ul>";
+echo '</section>';
 ?>
 
 <?php include 'footer.php'; ?>
